@@ -6,7 +6,7 @@ public class Blitz {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String[] tasks = new String[MAX_TASKS];
+        Task[] tasks = new Task[MAX_TASKS];
         int taskCount = 0;
         
         System.out.println(Line);
@@ -29,6 +29,7 @@ public class Blitz {
             
             if (input.equals("list")) {
                 System.out.println(Line);
+                System.out.println("Here are the tasks in your list:");
                 if (taskCount == 0) {
                     System.out.println("Currently no task ongoing");
                 } else {
@@ -40,8 +41,48 @@ public class Blitz {
                 continue;
             }
 
+            if (input.startsWith("mark ")) {
+                String markNumber = input.substring(5).trim();
+
+                int taskNumber = Integer.parseInt(markNumber);
+                int index = taskNumber - 1;
+
+                if (index < 0 || index >= taskCount) {
+                    System.out.println(Line);
+                    System.out.println("Invalid task number!");
+                    System.out.println(Line);
+                } else {
+                    tasks[index].markAsDone();
+                    System.out.println(Line);
+                    System.out.println(" Nice! I've marked this task as done:");
+                    System.out.println("   " + tasks[index]);
+                    System.out.println(Line);
+                }
+                continue;
+            }
+
+            if (input.startsWith("unmark ")) {
+                String markNumber = input.substring(7).trim();
+
+                int taskNumber = Integer.parseInt(markNumber);
+                int index = taskNumber - 1;
+
+                if (index < 0 || index >= taskCount) {
+                    System.out.println(Line);
+                    System.out.println(" Invalid task number!");
+                    System.out.println(Line);
+                } else {
+                    tasks[index].markNotDone();
+                    System.out.println(Line);
+                    System.out.println(" OK, I've marked this task as not done yet:");
+                    System.out.println("   " + tasks[index]);
+                    System.out.println(Line);
+                }
+                continue;
+            }
+
             if (taskCount < MAX_TASKS) {
-                tasks[taskCount] = input;
+                tasks[taskCount] = new Task(input);
                 taskCount += 1;
                 System.out.println(Line);
                 System.out.println("added: " + input);
