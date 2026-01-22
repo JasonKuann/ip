@@ -41,6 +41,35 @@ public class Blitz {
                 continue;
             }
 
+            if (input.startsWith("todo")) {
+                String descrip = input.substring(5).trim();
+                Task newTask = new Todo(descrip);
+                taskCount = addTask(tasks, taskCount, newTask);
+                continue;
+            }
+
+            if (input.startsWith("deadline")) {
+                String restOfString = input.substring(9).trim();
+                int byIndex = restOfString.indexOf("/by");
+                String descrip = restOfString.substring(0, byIndex).trim();
+                String by = restOfString.substring(byIndex + 3).trim();
+                Task newTask = new Deadline(descrip, by);
+                taskCount = addTask(tasks, taskCount, newTask);
+                continue;
+            }
+
+            if (input.startsWith("event")) {
+                String restOfString = input.substring(6).trim();
+                int indexFrom = restOfString.indexOf("/from");
+                int indexTo = restOfString.indexOf("/to");
+                String descrip = restOfString.substring(0, indexFrom).trim();
+                String startTime = restOfString.substring(indexFrom + 5, indexTo).trim();
+                String endTime = restOfString.substring(indexTo + 3).trim();
+                Task newTask = new Event(descrip, startTime, endTime);
+                taskCount = addTask(tasks, taskCount, newTask);
+                continue;
+            }
+
             if (input.startsWith("mark ")) {
                 String markNumber = input.substring(5).trim();
 
@@ -80,7 +109,6 @@ public class Blitz {
                 }
                 continue;
             }
-
             if (taskCount < MAX_TASKS) {
                 tasks[taskCount] = new Task(input);
                 taskCount += 1;
@@ -93,5 +121,18 @@ public class Blitz {
             }
         }
         scanner.close();
+    }
+
+     private static int addTask(Task[] tasks, int taskCount, Task newTask) {
+        tasks[taskCount] = newTask;
+        taskCount++;
+
+        System.out.println(Line);
+        System.out.println(" Got it. I've added this task:");
+        System.out.println("   " + newTask);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println(Line);
+
+        return taskCount;
     }
 }
