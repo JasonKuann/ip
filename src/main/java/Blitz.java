@@ -21,109 +21,136 @@ public class Blitz {
                 System.out.println("Bye. Hope to see you again soon!");
                 System.out.println(Line);
                 break;
-            } else if (input.equals("nothing")) {
+            }
+
+            if (input.equals("nothing")) {
                 System.out.println(Line);
                 System.out.println("Then i can finally enjoy some break!");
                 System.out.println(Line);
-            } else {}
-            
-            if (input.equals("list")) {
+                continue;
+            }
+
+            try {
+                taskCount = handleInput(input, tasks, taskCount);
+            } catch(BlitzException e) {
                 System.out.println(Line);
-                System.out.println("Here are the tasks in your list:");
-                if (taskCount == 0) {
-                    System.out.println("Currently no task ongoing");
-                } else {
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println(i + 1 + ". " + tasks[i]);
-                    }
-                }
-                System.out.println(Line);
-                continue;
-            }
-
-            if (input.startsWith("todo")) {
-                String descrip = input.substring(5).trim();
-                Task newTask = new Todo(descrip);
-                taskCount = addTask(tasks, taskCount, newTask);
-                continue;
-            }
-
-            if (input.startsWith("deadline")) {
-                String restOfString = input.substring(9).trim();
-                int byIndex = restOfString.indexOf("/by");
-                String descrip = restOfString.substring(0, byIndex).trim();
-                String by = restOfString.substring(byIndex + 3).trim();
-                Task newTask = new Deadline(descrip, by);
-                taskCount = addTask(tasks, taskCount, newTask);
-                continue;
-            }
-
-            if (input.startsWith("event")) {
-                String restOfString = input.substring(6).trim();
-                int indexFrom = restOfString.indexOf("/from");
-                int indexTo = restOfString.indexOf("/to");
-                String descrip = restOfString.substring(0, indexFrom).trim();
-                String startTime = restOfString.substring(indexFrom + 5, indexTo).trim();
-                String endTime = restOfString.substring(indexTo + 3).trim();
-                Task newTask = new Event(descrip, startTime, endTime);
-                taskCount = addTask(tasks, taskCount, newTask);
-                continue;
-            }
-
-            if (input.startsWith("mark ")) {
-                String markNumber = input.substring(5).trim();
-
-                int taskNumber = Integer.parseInt(markNumber);
-                int index = taskNumber - 1;
-
-                if (index < 0 || index >= taskCount) {
-                    System.out.println(Line);
-                    System.out.println("Invalid task number!");
-                    System.out.println(Line);
-                } else {
-                    tasks[index].markAsDone();
-                    System.out.println(Line);
-                    System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("   " + tasks[index]);
-                    System.out.println(Line);
-                }
-                continue;
-            }
-
-            if (input.startsWith("unmark ")) {
-                String markNumber = input.substring(7).trim();
-
-                int taskNumber = Integer.parseInt(markNumber);
-                int index = taskNumber - 1;
-
-                if (index < 0 || index >= taskCount) {
-                    System.out.println(Line);
-                    System.out.println(" Invalid task number!");
-                    System.out.println(Line);
-                } else {
-                    tasks[index].markNotDone();
-                    System.out.println(Line);
-                    System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("   " + tasks[index]);
-                    System.out.println(Line);
-                }
-                continue;
-            }
-            if (taskCount < MAX_TASKS) {
-                tasks[taskCount] = new Task(input);
-                taskCount += 1;
-                System.out.println(Line);
-                System.out.println("added: " + input);
-                System.out.println(Line);
-            } else {
-                System.out.println("I am currently sleeping, do not disturb me!");
+                System.out.println(" " + e.getMessage());
                 System.out.println(Line);
             }
         }
         scanner.close();
     }
 
-     private static int addTask(Task[] tasks, int taskCount, Task newTask) {
+    private static int handleInput(String input, Task[] tasks, int taskCount) throws BlitzException {
+        if (input.equals("list")) {
+            System.out.println(Line);
+            System.out.println("Here are the tasks in your list:");
+            if (taskCount == 0) {
+                System.out.println("Currently no task ongoing");
+            } else {
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println(i + 1 + ". " + tasks[i]);
+                }
+            }
+            System.out.println(Line);
+            return taskCount;
+        }
+
+        if (input.startsWith("todo")) {
+            String descrip = input.substring(4).trim();
+            if (descrip.isEmpty()) {
+                throw new BlitzException("What is the todo description? Give me more details!");
+            }
+            return addTask(tasks, taskCount, new Todo(descrip));
+        }
+
+        if (input.startsWith("deadline")) {
+            String restOfString = input.substring(8).trim();
+            if (restOfString.isEmpty()) {
+                throw new BlitzException("What is the deadline? I need a deadline!");
+            }
+            int byIndex = restOfString.indexOf("/by");
+            if (byIndex == -1) {
+                throw new BlitzException("Deadline must have a /by!");
+            }
+            String descrip = restOfString.substring(0, byIndex).trim();
+            if (descrip.isEmpty()) {
+                throw new BlitzException("What is the activity being due? Give me the description!");
+            }
+            String by = restOfString.substring(byIndex + 3).trim();
+            if (by.isEmpty()) {
+                throw new BlitzException("By when? When is it due?");
+            }
+            return addTask(tasks, taskCount, new Deadline(descrip, by));
+        }
+
+        if (input.startsWith("event")) {
+            String restOfString = input.substring(5).trim();
+            if (restOfString.isEmpty()) {
+                throw new BlitzException("Event details cannot be empty? I need more information!");
+            }
+            int indexFrom = restOfString.indexOf("/from");
+            int indexTo = restOfString.indexOf("/to");
+            if (indexFrom == -1 || indexTo == -1 || indexTo < indexFrom) {
+                throw new BlitzException("What is the start and end details of this event?");
+            }
+            String descrip = restOfString.substring(0, indexFrom).trim();
+            if (descrip.isEmpty()) {
+                throw new BlitzException("What is the event title or name? Give me the description!");
+            }
+            String startTime = restOfString.substring(indexFrom + 5, indexTo).trim();
+            String endTime = restOfString.substring(indexTo + 3).trim();
+            if (startTime.isEmpty() || endTime.isEmpty()) {
+                throw new BlitzException("Event must have both start and end time!");
+            }
+            return addTask(tasks, taskCount, new Event(descrip, startTime, endTime));
+        }
+
+        if (input.startsWith("mark")) {
+            String markNumber = input.substring(4).trim();
+            if (markNumber.isEmpty()) {
+                throw new BlitzException("How do i mark something that is not there? I need to mark something!");
+            }
+            int taskNumber = Integer.parseInt(markNumber);
+            int index = taskNumber - 1;
+            if (index < 0 || index >= taskCount) {
+                throw new BlitzException("Invalid task number");
+            } else {
+                tasks[index].markAsDone();
+                System.out.println(Line);
+                System.out.println(" Nice! I've marked this task as done:");
+                System.out.println("   " + tasks[index]);   
+                System.out.println(Line);
+            }
+            return taskCount;
+        }
+
+        if (input.startsWith("unmark")) {
+            String markNumber = input.substring(6).trim();
+            if (markNumber.isEmpty()) {
+                throw new BlitzException("How do i unmark something that is not there? I need to unmark something!");
+            }
+            int taskNumber = Integer.parseInt(markNumber);
+            int index = taskNumber - 1;
+            if (index < 0 || index >= taskCount) {
+                throw new BlitzException("Invalid task number");
+            } else {
+                tasks[index].markNotDone();
+                System.out.println(Line);
+                System.out.println(" OK, I've marked this task as not done yet:");
+                System.out.println("   " + tasks[index]);
+                System.out.println(Line);
+                return taskCount;
+            }
+        }
+        throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye");
+    }
+
+     private static int addTask(Task[] tasks, int taskCount, Task newTask) throws BlitzException {
+        if (taskCount >= MAX_TASKS) {
+            throw new BlitzException("I am currently sleeping, do not disturb me!");
+        }
+
         tasks[taskCount] = newTask;
         taskCount++;
 
