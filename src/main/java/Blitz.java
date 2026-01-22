@@ -1,13 +1,12 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Blitz {
     public static final String Line = "____________________________________________________________";
-    public static final int MAX_TASKS = 100;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[MAX_TASKS];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
         
         System.out.println(Line);
         System.out.println(" Hello! I'm Blitz");
@@ -31,8 +30,8 @@ public class Blitz {
             }
 
             try {
-                taskCount = handleInput(input, tasks, taskCount);
-            } catch(BlitzException e) {
+                handleInput(input, tasks);
+            } catch (BlitzException e) {
                 System.out.println(Line);
                 System.out.println(" " + e.getMessage());
                 System.out.println(Line);
@@ -41,19 +40,19 @@ public class Blitz {
         scanner.close();
     }
 
-    private static int handleInput(String input, Task[] tasks, int taskCount) throws BlitzException {
+    private static void handleInput(String input, ArrayList<Task> tasks) throws BlitzException {
         if (input.equals("list")) {
             System.out.println(Line);
             System.out.println("Here are the tasks in your list:");
-            if (taskCount == 0) {
+            if (tasks.isEmpty()) {
                 System.out.println("Currently no task ongoing");
             } else {
-                for (int i = 0; i < taskCount; i++) {
-                    System.out.println(i + 1 + ". " + tasks[i]);
+                for (int i = 0; i < tasks.size(); i++) {
+                    System.out.println(i + 1 + ". " + tasks.get(i));
                 }
             }
             System.out.println(Line);
-            return taskCount;
+            return;
         }
 
         if (input.startsWith("todo")) {
@@ -61,7 +60,15 @@ public class Blitz {
             if (descrip.isEmpty()) {
                 throw new BlitzException("What is the todo description? Give me more details!");
             }
-            return addTask(tasks, taskCount, new Todo(descrip));
+            
+            Task newTask = new Task(descrip);
+            tasks.add(newTask);
+            System.out.println(Line);
+            System.out.println(" Got it. I've added this task:");
+            System.out.println("   " + newTask);
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+            System.out.println(Line);
+            return;
         }
 
         if (input.startsWith("deadline")) {
@@ -81,7 +88,14 @@ public class Blitz {
             if (by.isEmpty()) {
                 throw new BlitzException("By when? When is it due?");
             }
-            return addTask(tasks, taskCount, new Deadline(descrip, by));
+            Task newTask = new Deadline(descrip, by);
+            tasks.add(newTask);
+            System.out.println(Line);
+            System.out.println(" Got it. I've added this task:");
+            System.out.println("   " + newTask);
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+            System.out.println(Line);
+            return;
         }
 
         if (input.startsWith("event")) {
@@ -103,7 +117,14 @@ public class Blitz {
             if (startTime.isEmpty() || endTime.isEmpty()) {
                 throw new BlitzException("Event must have both start and end time!");
             }
-            return addTask(tasks, taskCount, new Event(descrip, startTime, endTime));
+            Task newTask = new Event(descrip, startTime, endTime);
+            tasks.add(newTask);
+            System.out.println(Line);
+            System.out.println(" Got it. I've added this task:");
+            System.out.println("   " + newTask);
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+            System.out.println(Line);
+            return;
         }
 
         if (input.startsWith("mark")) {
@@ -113,16 +134,16 @@ public class Blitz {
             }
             int taskNumber = Integer.parseInt(markNumber);
             int index = taskNumber - 1;
-            if (index < 0 || index >= taskCount) {
+            if (index < 0 || index >= tasks.size()) {
                 throw new BlitzException("Invalid task number");
             } else {
-                tasks[index].markAsDone();
+                tasks.get(index).markAsDone();
                 System.out.println(Line);
                 System.out.println(" Nice! I've marked this task as done:");
-                System.out.println("   " + tasks[index]);   
+                System.out.println("   " + tasks.get(index));   
                 System.out.println(Line);
             }
-            return taskCount;
+            return;
         }
 
         if (input.startsWith("unmark")) {
@@ -132,34 +153,33 @@ public class Blitz {
             }
             int taskNumber = Integer.parseInt(markNumber);
             int index = taskNumber - 1;
-            if (index < 0 || index >= taskCount) {
+            if (index < 0 || index >= tasks.size()) {
                 throw new BlitzException("Invalid task number");
             } else {
-                tasks[index].markNotDone();
+                tasks.get(index).markNotDone();
                 System.out.println(Line);
                 System.out.println(" OK, I've marked this task as not done yet:");
-                System.out.println("   " + tasks[index]);
+                System.out.println("   " + tasks.get(index));
                 System.out.println(Line);
-                return taskCount;
+                return;
             }
         }
-        throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye");
-    }
 
-     private static int addTask(Task[] tasks, int taskCount, Task newTask) throws BlitzException {
-        if (taskCount >= MAX_TASKS) {
-            throw new BlitzException("I am currently sleeping, do not disturb me!");
+        if (input.startsWith("delete")) {
+            String restOfString = input.substring(6).trim();
+            if (restOfString.isEmpty()) {
+                throw new BlitzException("Delete what? Provide task number!");
+            }
+            int taskNumber = Integer.parseInt(restOfString);
+            int index = taskNumber - 1;
+            Task delete = tasks.remove(index);
+            System.out.println(Line);
+            System.out.println(" Noted. I've removed this task:");
+            System.out.println("   " + delete);
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+            System.out.println(Line);
+            return;
         }
-
-        tasks[taskCount] = newTask;
-        taskCount++;
-
-        System.out.println(Line);
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("   " + newTask);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
-        System.out.println(Line);
-
-        return taskCount;
+        throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye");
     }
 }
