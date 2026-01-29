@@ -1,19 +1,10 @@
-import java.time.LocalDateTime;
-
-public abstract class Task {
+public class Task {
     protected String description;
     protected boolean isDone;
-    protected LocalDateTime date;
 
     public Task(String description) {
         this.description = description;
         this.isDone = false;
-    }
-
-    public abstract String getTaskInfo();
-
-    public LocalDateTime getDate() {
-        return date;
     }
 
     public String getStatusIcon() {

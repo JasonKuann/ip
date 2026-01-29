@@ -4,10 +4,6 @@ public class Todo extends Task {
         super(description);
     }
 
-    @Override
-    public String getTaskInfo() {
-        return "";
-    }
     
     @Override
     public String toString() {
