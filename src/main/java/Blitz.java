@@ -5,9 +5,10 @@ import java.io.IOException;
 public class Blitz {
     public static final String Line = "____________________________________________________________";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
+        
         try {
             tasks = TaskStorage.loadTasks();
         } catch (IOException e) {
