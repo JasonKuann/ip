@@ -1,13 +1,19 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.IOException;
 
 public class Blitz {
     public static final String Line = "____________________________________________________________";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
-        
+        try {
+            tasks = TaskStorage.loadTasks();
+        } catch (IOException e) {
+            System.out.println("Cannot load tasks: " + e.getMessage());
+        }
+
         System.out.println(Line);
         System.out.println(" Hello! I'm Blitz");
         System.out.println(" What can I do for you?");
@@ -31,10 +37,13 @@ public class Blitz {
 
             try {
                 handleInput(input, tasks);
+                TaskStorage.saveTasks(tasks);
             } catch (BlitzException e) {
                 System.out.println(Line);
                 System.out.println(" " + e.getMessage());
                 System.out.println(Line);
+            } catch (IOException e) {
+                System.out.println("Cannot save tasks: " + e.getMessage());
             }
         }
         scanner.close();
@@ -44,6 +53,7 @@ public class Blitz {
         if (input.equals("list")) {
             System.out.println(Line);
             System.out.println("Here are the tasks in your list:");
+
             if (tasks.isEmpty()) {
                 System.out.println("Currently no task ongoing");
             } else {
@@ -51,6 +61,7 @@ public class Blitz {
                     System.out.println(i + 1 + ". " + tasks.get(i));
                 }
             }
+
             System.out.println(Line);
             return;
         }
@@ -61,7 +72,7 @@ public class Blitz {
                 throw new BlitzException("What is the todo description? Give me more details!");
             }
             
-            Task newTask = new Task(descrip);
+            Task newTask = new Todo(descrip);
             tasks.add(newTask);
             System.out.println(Line);
             System.out.println(" Got it. I've added this task:");
