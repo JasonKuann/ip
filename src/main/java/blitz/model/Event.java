@@ -1,3 +1,5 @@
+package blitz.model;
+
 public class Event extends Task {
 
     protected String startTime;

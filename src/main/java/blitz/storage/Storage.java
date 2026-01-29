@@ -1,3 +1,5 @@
+package blitz.storage;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -5,8 +7,13 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import blitz.model.Task;
+import blitz.model.Todo;
+import blitz.model.Deadline;
+import blitz.model.Event;
+import blitz.model.TaskList;
 
-public class TaskStorage {
+public class Storage {
 
     public static final String FILE_PATH = "./data/blitztasks.txt";
 

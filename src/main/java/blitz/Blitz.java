@@ -1,3 +1,14 @@
+package blitz;
+
+import java.io.IOException;
+import java.util.Scanner;
+
+import blitz.ui.Ui;
+import blitz.storage.Storage;
+import blitz.model.TaskList;
+import blitz.parser.Parser;
+import blitz.command.Command;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
@@ -10,7 +21,7 @@ public class Blitz {
         ArrayList<Task> tasks = new ArrayList<>();
         
         try {
-            tasks = TaskStorage.loadTasks();
+            tasks = Storage.loadTasks();
         } catch (IOException e) {
             System.out.println("Cannot load tasks: " + e.getMessage());
         }
@@ -38,7 +49,7 @@ public class Blitz {
 
             try {
                 handleInput(input, tasks);
-                TaskStorage.saveTasks(tasks);
+                Storage.saveTasks(tasks);
             } catch (BlitzException e) {
                 System.out.println(Line);
                 System.out.println(" " + e.getMessage());
