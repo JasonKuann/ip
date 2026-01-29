@@ -18,6 +18,11 @@ public class Event extends Task {
     }
     
     @Override
+    public String getTaskInfo() {
+        return "from: " + startTime + "to: " + endTime;
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + startTime + " to: " + endTime + ")";
     }
