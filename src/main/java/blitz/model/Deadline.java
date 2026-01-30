@@ -5,19 +5,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * A task that has a deadline.
+ * A task that has a deadline date (and optionally time).
  *
- * <p>Parses user-provided date strings into LocalDateTime when possible.
+ * <p>Parses common date formats into LocalDateTime for nicer display.
  */
 public class Deadline extends Task {
 
     protected final String by;
 
     /**
-     * Create a Deadline.
+     * Construct a Deadline.
      *
-     * @param description human description of the task
-     * @param dateStr user-provided date string (e.g., "2019-12-02" or "2/12/2019 1800")
+     * @param description human description
+     * @param dateStr     user-provided date string (e.g., "2019-12-02" or "2/12/2019 1800")
      */
     public Deadline(final String description, final String dateStr) {
         super(description);
@@ -31,29 +31,27 @@ public class Deadline extends Task {
             return "by: " + by;
         }
 
-        final DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("MMM d yyyy");      // e.g. Dec 2 2019
+        final DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("MMM d yyyy");
         if (date.getHour() == 0 && date.getMinute() == 0) {
             return "by: " + date.format(dateOnly);
-        } else {
-            final DateTimeFormatter dateTime = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm"); // e.g. Dec 2 2019 18:00
-            return "by: " + date.format(dateTime);
         }
+
+        final DateTimeFormatter dateTime = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
+        return "by: " + date.format(dateTime);
     }
 
     /**
-     * Attempts to parse common date formats into LocalDateTime.
+     * Attempts to parse common date formats into a LocalDateTime.
      *
-     * Accepted formats:
+     * Supported formats:
      * <ul>
-     *   <li>yyyy-MM-dd (interpreted as start of day)</li>
-     *   <li>d/M/yyyy HHmm (e.g., 2/12/2019 1800)</li>
-     *   <li>d/M/yyyy (interpreted as start of day)</li>
+     *   <li>yyyy-MM-dd</li>
+     *   <li>d/M/yyyy HHmm</li>
+     *   <li>d/M/yyyy</li>
      * </ul>
      *
-     * If parsing fails, returns null and the original string is preserved in {@link #by}.
-     *
-     * @param dateStr the date/time string provided by the user
-     * @return parsed LocalDateTime or null when parsing failed
+     * @param dateStr user-provided string
+     * @return parsed LocalDateTime or null if parsing failed
      */
     private LocalDateTime parseDate(final String dateStr) {
         if (dateStr == null) {
@@ -61,38 +59,37 @@ public class Deadline extends Task {
         }
         final String s = dateStr.trim();
 
-        // Try ISO yyyy-MM-dd first
+        // 1) ISO date: yyyy-MM-dd
         try {
-            final LocalDate ld = LocalDate.parse(s); // accepts "2019-12-02"
+            final LocalDate ld = LocalDate.parse(s);
             return ld.atStartOfDay();
         } catch (Exception ignored) {
-            // try next
+            // fall through
         }
 
-        // Try d/M/yyyy HHmm (e.g. "2/12/2019 1800")
+        // 2) d/M/yyyy HHmm
         try {
             final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
             return LocalDateTime.parse(s, dtf);
         } catch (Exception ignored) {
-            // try next
+            // fall through
         }
 
-        // Try d/M/yyyy (e.g. "2/12/2019")
+        // 3) d/M/yyyy
         try {
             final DateTimeFormatter df = DateTimeFormatter.ofPattern("d/M/yyyy");
             final LocalDate ld = LocalDate.parse(s, df);
             return ld.atStartOfDay();
         } catch (Exception ignored) {
-            // nothing left
+            // give up
         }
 
-        // Could not parse — preserve original string
         return null;
     }
 
-    /** Returns the original user-provided date string. */
+    /** Return the original string provided by the user. */
     public String getBy() {
-        return this.by;
+        return by;
     }
 
     @Override

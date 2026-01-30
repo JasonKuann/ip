@@ -1,30 +1,38 @@
 package blitz;
 
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-import blitz.ui.Ui;
+import blitz.model.Task;
+import blitz.model.Todo;
+import blitz.model.Deadline;
+import blitz.model.Event;
 import blitz.storage.Storage;
-import blitz.model.*;
 
 /**
- * Application entry point for Blitz.
+ * Entry point for the Blitz CLI application.
  *
- * <p>Holds the main loop and delegates parsing / persistence to Parser and Storage.
+ * <p>Keeps the original simple loop: read commands, mutate an in-memory list,
+ * and persist to storage.
  */
-public class Blitz {
-    /** CLI divider line shown between messages. */
+public final class Blitz {
+    /** Divider line printed between messages. */
     public static final String LINE = "____________________________________________________________";
 
+    private Blitz() {
+        // Utility class: prevent instantiation.
+    }
+
     /**
-     * Application main method.
+     * Application main.
      *
-     * @param args command-line arguments (unused)
+     * @param args command-line args (unused)
      */
     public static void main(final String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
 
         try {
             tasks = Storage.loadTasks();
@@ -64,40 +72,38 @@ public class Blitz {
                 System.out.println("Cannot save tasks: " + e.getMessage());
             }
         }
+
         scanner.close();
     }
 
     /**
-     * Processes a single user input command and mutates the task list.
+     * Handle a single user command and mutate the provided task list.
      *
-     * @param input raw user input
+     * @param input raw input line from user
      * @param tasks list of tasks to update
-     * @throws BlitzException when input is invalid or malformed
+     * @throws BlitzException when the input is invalid
      */
-    private static void handleInput(final String input, final ArrayList<Task> tasks) throws BlitzException {
+    private static void handleInput(final String input, final List<Task> tasks) throws BlitzException {
         if (input.equals("list")) {
             System.out.println(LINE);
             System.out.println("Here are the tasks in your list:");
-
             if (tasks.isEmpty()) {
                 System.out.println("Currently no task ongoing");
             } else {
                 for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println(i + 1 + ". " + tasks.get(i));
+                    System.out.println((i + 1) + ". " + tasks.get(i));
                 }
             }
-
             System.out.println(LINE);
             return;
         }
 
         if (input.startsWith("todo")) {
-            final String descrip = input.substring(4).trim();
-            if (descrip.isEmpty()) {
+            final String desc = input.substring(4).trim();
+            if (desc.isEmpty()) {
                 throw new BlitzException("What is the todo description? Give me more details!");
             }
-
-            final Task newTask = new Todo(descrip);
+            final Task newTask = new Todo(desc);
             tasks.add(newTask);
             System.out.println(LINE);
             System.out.println(" Got it. I've added this task:");
@@ -108,23 +114,23 @@ public class Blitz {
         }
 
         if (input.startsWith("deadline")) {
-            final String restOfString = input.substring(8).trim();
-            if (restOfString.isEmpty()) {
+            final String rest = input.substring(8).trim();
+            if (rest.isEmpty()) {
                 throw new BlitzException("What is the deadline? I need a deadline!");
             }
-            final int byIndex = restOfString.indexOf("/by");
-            if (byIndex == -1) {
+            final int byIdx = rest.indexOf("/by");
+            if (byIdx == -1) {
                 throw new BlitzException("Deadline must have a /by!");
             }
-            final String descrip = restOfString.substring(0, byIndex).trim();
-            if (descrip.isEmpty()) {
+            final String desc = rest.substring(0, byIdx).trim();
+            if (desc.isEmpty()) {
                 throw new BlitzException("What is the activity being due? Give me the description!");
             }
-            final String by = restOfString.substring(byIndex + 3).trim();
+            final String by = rest.substring(byIdx + 3).trim();
             if (by.isEmpty()) {
                 throw new BlitzException("By when? When is it due?");
             }
-            final Task newTask = new Deadline(descrip, by);
+            final Task newTask = new Deadline(desc, by);
             tasks.add(newTask);
             System.out.println(LINE);
             System.out.println(" Got it. I've added this task:");
@@ -135,25 +141,25 @@ public class Blitz {
         }
 
         if (input.startsWith("event")) {
-            final String restOfString = input.substring(5).trim();
-            if (restOfString.isEmpty()) {
+            final String rest = input.substring(5).trim();
+            if (rest.isEmpty()) {
                 throw new BlitzException("Event details cannot be empty? I need more information!");
             }
-            final int indexFrom = restOfString.indexOf("/from");
-            final int indexTo = restOfString.indexOf("/to");
-            if (indexFrom == -1 || indexTo == -1 || indexTo < indexFrom) {
+            final int fromIdx = rest.indexOf("/from");
+            final int toIdx = rest.indexOf("/to");
+            if (fromIdx == -1 || toIdx == -1 || toIdx < fromIdx) {
                 throw new BlitzException("What is the start and end details of this event?");
             }
-            final String descrip = restOfString.substring(0, indexFrom).trim();
-            if (descrip.isEmpty()) {
+            final String desc = rest.substring(0, fromIdx).trim();
+            if (desc.isEmpty()) {
                 throw new BlitzException("What is the event title or name? Give me the description!");
             }
-            final String startTime = restOfString.substring(indexFrom + 5, indexTo).trim();
-            final String endTime = restOfString.substring(indexTo + 3).trim();
+            final String startTime = rest.substring(fromIdx + 5, toIdx).trim();
+            final String endTime = rest.substring(toIdx + 3).trim();
             if (startTime.isEmpty() || endTime.isEmpty()) {
                 throw new BlitzException("Event must have both start and end time!");
             }
-            final Task newTask = new Event(descrip, startTime, endTime);
+            final Task newTask = new Event(desc, startTime, endTime);
             tasks.add(newTask);
             System.out.println(LINE);
             System.out.println(" Got it. I've added this task:");
@@ -164,58 +170,57 @@ public class Blitz {
         }
 
         if (input.startsWith("mark")) {
-            final String markNumber = input.substring(4).trim();
-            if (markNumber.isEmpty()) {
+            final String num = input.substring(4).trim();
+            if (num.isEmpty()) {
                 throw new BlitzException("How do i mark something that is not there? I need to mark something!");
             }
-            final int taskNumber = Integer.parseInt(markNumber);
+            final int taskNumber = Integer.parseInt(num);
             final int index = taskNumber - 1;
             if (index < 0 || index >= tasks.size()) {
                 throw new BlitzException("Invalid task number");
-            } else {
-                tasks.get(index).markAsDone();
-                System.out.println(LINE);
-                System.out.println(" Nice! I've marked this task as done:");
-                System.out.println("   " + tasks.get(index));
-                System.out.println(LINE);
             }
+            tasks.get(index).markAsDone();
+            System.out.println(LINE);
+            System.out.println(" Nice! I've marked this task as done:");
+            System.out.println("   " + tasks.get(index));
+            System.out.println(LINE);
             return;
         }
 
         if (input.startsWith("unmark")) {
-            final String markNumber = input.substring(6).trim();
-            if (markNumber.isEmpty()) {
+            final String num = input.substring(6).trim();
+            if (num.isEmpty()) {
                 throw new BlitzException("How do i unmark something that is not there? I need to unmark something!");
             }
-            final int taskNumber = Integer.parseInt(markNumber);
+            final int taskNumber = Integer.parseInt(num);
             final int index = taskNumber - 1;
             if (index < 0 || index >= tasks.size()) {
                 throw new BlitzException("Invalid task number");
-            } else {
-                tasks.get(index).markNotDone();
-                System.out.println(LINE);
-                System.out.println(" OK, I've marked this task as not done yet:");
-                System.out.println("   " + tasks.get(index));
-                System.out.println(LINE);
-                return;
             }
+            tasks.get(index).markNotDone();
+            System.out.println(LINE);
+            System.out.println(" OK, I've marked this task as not done yet:");
+            System.out.println("   " + tasks.get(index));
+            System.out.println(LINE);
+            return;
         }
 
         if (input.startsWith("delete")) {
-            final String restOfString = input.substring(6).trim();
-            if (restOfString.isEmpty()) {
+            final String rest = input.substring(6).trim();
+            if (rest.isEmpty()) {
                 throw new BlitzException("Delete what? Provide task number!");
             }
-            final int taskNumber = Integer.parseInt(restOfString);
+            final int taskNumber = Integer.parseInt(rest);
             final int index = taskNumber - 1;
-            final Task delete = tasks.remove(index);
+            final Task removed = tasks.remove(index);
             System.out.println(LINE);
             System.out.println(" Noted. I've removed this task:");
-            System.out.println("   " + delete);
+            System.out.println("   " + removed);
             System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
             System.out.println(LINE);
             return;
         }
+
         throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye");
     }
 }

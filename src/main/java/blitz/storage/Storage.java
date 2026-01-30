@@ -1,31 +1,41 @@
 package blitz.storage;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-import blitz.model.*;
+import blitz.model.Task;
+import blitz.model.Todo;
+import blitz.model.Deadline;
+import blitz.model.Event;
 
 /**
- * Storage helper responsible for loading and saving tasks to disk.
+ * Handles loading and saving tasks to the default file path.
  *
- * <p>Uses the text format: TYPE | isDone(0/1) | description | extra...
+ * <p>Uses the same on-disk format as your original application:
+ * TYPE | isDone(0/1) | description | extra...
  */
 public final class Storage {
-    /** Default file path for storing tasks. */
+    /** Default storage file path (relative to working directory). */
     public static final String FILE_PATH = "./data/blitztasks.txt";
 
     private Storage() {
-        // utility class - prevent instantiation
+        // Utility class - prevent instantiation.
     }
 
     /**
-     * Loads tasks from the default file path.
+     * Loads tasks from the default storage file.
      *
-     * @return an ArrayList of Task objects loaded from disk
-     * @throws IOException if an I/O error occurs while reading the file
+     * @return list of tasks loaded (never null)
+     * @throws IOException if reading the file fails
      */
-    public static ArrayList<Task> loadTasks() throws IOException {
-        final ArrayList<Task> tasks = new ArrayList<>();
+    public static List<Task> loadTasks() throws IOException {
+        final List<Task> tasks = new ArrayList<>();
         final File file = new File(FILE_PATH);
 
         if (!file.getParentFile().exists()) {
@@ -54,11 +64,11 @@ public final class Storage {
                         task = new Event(parts[2], parts[3], parts[4]);
                         break;
                     default:
-                        // ignore unknown record type
+                        // Unknown record type — ignore line.
                 }
 
                 if (task != null) {
-                    if (parts[1].trim().equals("1")) {
+                    if ("1".equals(parts[1].trim())) {
                         task.markAsDone();
                     }
                     tasks.add(task);
@@ -70,21 +80,23 @@ public final class Storage {
     }
 
     /**
-     * Save the provided tasks to the default storage file (overwrites file).
+     * Save tasks to the default storage file (overwrites existing file).
      *
-     * @param tasks the tasks to persist
+     * @param tasks tasks to persist
      * @throws IOException if writing fails
      */
-    public static void saveTasks(final ArrayList<Task> tasks) throws IOException {
+    public static void saveTasks(final List<Task> tasks) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (Task task : tasks) {
+            for (final Task task : tasks) {
                 String taskString = "";
                 if (task instanceof Todo) {
                     taskString = "T | " + (task.isDone() ? "1" : "0") + " | " + task.getDescription();
                 } else if (task instanceof Deadline) {
-                    taskString = "D | " + (task.isDone() ? "1" : "0") + " | " + task.getDescription() + " | " + ((Deadline) task).getBy();
+                    taskString = "D | " + (task.isDone() ? "1" : "0") + " | " + task.getDescription()
+                            + " | " + ((Deadline) task).getBy();
                 } else if (task instanceof Event) {
-                    taskString = "E | " + (task.isDone() ? "1" : "0") + " | " + task.getDescription() + " | " + ((Event) task).getStartTime() + " | " + ((Event) task).getEndTime();
+                    taskString = "E | " + (task.isDone() ? "1" : "0") + " | " + task.getDescription()
+                            + " | " + ((Event) task).getStartTime() + " | " + ((Event) task).getEndTime();
                 }
 
                 writer.write(taskString);
