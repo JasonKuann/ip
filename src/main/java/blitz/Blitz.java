@@ -98,6 +98,34 @@ public final class Blitz {
             return;
         }
 
+        /* ---------- FIND: new feature for Level 9 ---------- */
+        if (input.startsWith("find")) {
+            final String keyword = input.substring(4).trim();
+            if (keyword.isEmpty()) {
+                throw new BlitzException("What are you searching for? Provide a keyword!");
+            }
+
+            final String lowerKeyword = keyword.toLowerCase();
+            final List<Task> matches = new ArrayList<>();
+            for (final Task t : tasks) {
+                if (t.getDescription() != null && t.getDescription().toLowerCase().contains(lowerKeyword)) {
+                    matches.add(t);
+                }
+            }
+
+            System.out.println(LINE);
+            System.out.println("Here are the matching tasks in your list:");
+            if (matches.isEmpty()) {
+                System.out.println("No matching tasks found.");
+            } else {
+                for (int i = 0; i < matches.size(); i++) {
+                    System.out.println((i + 1) + ". " + matches.get(i));
+                }
+            }
+            System.out.println(LINE);
+            return;
+        }
+
         if (input.startsWith("todo")) {
             final String desc = input.substring(4).trim();
             if (desc.isEmpty()) {
