@@ -1,13 +1,32 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'checkstyle'
 }
 
 group = 'blitz'
 version = '1.0.0'
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+checkstyle {
+    toolVersion = '11.0.0'
+    configFile = file('config/checkstyle/checkstyle.xml')
+}
+
+
+tasks.named('checkstyleMain') {
+
+}
+
+tasks.named('checkstyleTest') {
+
+}
 
 repositories {
     mavenCentral()
@@ -18,9 +37,18 @@ dependencies {
 }
 
 application {
-    mainClass = 'blitz.Blitz' // update if package/main class differs
+    mainClass.set('blitz.Blitz')
 }
 
 test {
     useJUnitPlatform()
+}
+
+tasks.named('shadowJar') {
+    archiveBaseName.set('blitzbot')
+    archiveClassifier.set('all')
+    archiveVersion.set(project.version.toString())
+    manifest {
+        attributes 'Main-Class': 'blitz.Blitz'
+    }
 }
