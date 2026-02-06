@@ -1,7 +1,8 @@
 package blitz.command;
 
 import java.io.IOException;
-import blitz.model.*;
+import blitz.model.TaskList;
+import blitz.model.Task;
 import blitz.ui.Ui;
 import blitz.storage.Storage;
 import blitz.BlitzException;
@@ -14,8 +15,10 @@ public class MarkCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws BlitzException {
-        if (index < 0 || index >= tasks.size()) throw new BlitzException("Invalid task number");
+    public void execute(TaskList tasks, Ui ui) throws BlitzException {
+        if (index < 0 || index >= tasks.size()) {
+            throw new BlitzException("Invalid task number");
+        }
         Task t = tasks.get(index);
         t.markAsDone();
         ui.showMarked(t);

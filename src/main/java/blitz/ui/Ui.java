@@ -3,6 +3,7 @@ package blitz.ui;
 import java.util.Scanner;
 import blitz.model.Task;
 import blitz.model.TaskList;
+import java.util.ArrayList;
 
 /**
  * Responsible for user interaction (printing lines, welcome, errors, and reading input).
@@ -101,5 +102,17 @@ public class Ui {
     public void showUnmarked(final Task task) {
         System.out.println(" OK, I've marked this task as not done yet:");
         System.out.println("   " + task);
+    }
+
+    /** Show the list of matching tasks. */
+    public void showFound(ArrayList<Task> matches) {
+        System.out.println(" Here are the matching tasks in your list:");
+        if (matches.isEmpty()) {
+            System.out.println(" No matching tasks found.");
+            return;
+        }
+        for (int i = 0; i < matches.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + matches.get(i));
+        }
     }
 }

@@ -30,7 +30,7 @@ public class TaskList {
         return tasks.size();
     }
 
-    public List<Task> asList() {
+    public ArrayList<Task> asList() {
         return tasks;
     }
 }

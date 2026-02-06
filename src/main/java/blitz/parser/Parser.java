@@ -71,7 +71,11 @@ public class Parser {
             final int idx = Integer.parseInt(num) - 1;
             return new DeleteCommand(idx);
         }
+        if (input.startsWith("find")) {
+            String keyword = input.substring(4).trim();
+            return new FindCommand(keyword);
+        }
 
-        throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye");
+        throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye / find");
     }
 }

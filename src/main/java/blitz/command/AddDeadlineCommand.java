@@ -1,7 +1,9 @@
 package blitz.command;
 
 import java.io.IOException;
-import blitz.model.*;
+import blitz.model.TaskList;
+import blitz.model.Task;
+import blitz.model.Deadline;
 import blitz.ui.Ui;
 import blitz.storage.Storage;
 import blitz.BlitzException;
@@ -16,7 +18,7 @@ public class AddDeadlineCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException, BlitzException {
+    public void execute(TaskList tasks, Ui ui) throws IOException, BlitzException {
         Task t = new Deadline(description, by);
         tasks.add(t);
         ui.showAdded(t, tasks.size());
