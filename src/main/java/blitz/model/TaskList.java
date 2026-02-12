@@ -21,6 +21,15 @@ public class TaskList {
         tasks.add(t);
     }
 
+    public boolean hasDuplicate(Task task) {
+        for (Task t : tasks) {
+            if (t.getDescription().equals(task.getDescription())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Task remove(int index) {
         assert index >= 0 && index < tasks.size() : "Invalid task index for removal!";  // Added assertion
         return tasks.remove(index);
