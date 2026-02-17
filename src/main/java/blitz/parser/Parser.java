@@ -112,7 +112,6 @@ public class Parser {
             assert !keyword.isEmpty() : "Search keyword cannot be empty!";  // Added assertion
             return new FindCommand(keyword);
         }
-
         throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye / find");
     }
 }

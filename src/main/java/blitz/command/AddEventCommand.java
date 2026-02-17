@@ -1,8 +1,8 @@
 package blitz.command;
 
 import java.io.IOException;
-import blitz.model.Task;
 import blitz.model.TaskList;
+import blitz.model.Task;
 import blitz.model.Event;
 import blitz.ui.Ui;
 import blitz.storage.Storage;
