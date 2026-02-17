@@ -92,6 +92,19 @@ Expected outcome:
 Expected output:  
 `[T][ ] running`
 
+## Detecting Duplicates
+Detects duplicates when adding todo, deadline and event tasks into the task list
+
+Example: `todo swimming`  
+
+Example: `todo swimming`  
+
+Expected outcome:  
+`Error: This task is already in your list!`  
+
+Expected output:  
+`Error: This task is already in your list!`  
+
 ## Exit
 Exits program after a short delay
 
