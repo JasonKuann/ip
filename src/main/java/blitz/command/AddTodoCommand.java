@@ -16,8 +16,11 @@ public class AddTodoCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui) throws IOException {
+    public void execute(TaskList tasks, Ui ui) throws BlitzException, IOException {
         Task t = new Todo(description);
+        if (tasks.hasDuplicate(t)) {
+            throw new BlitzException("This task is already in your list!");
+        }
         tasks.add(t);
         ui.showAdded(t, tasks.size());
     }

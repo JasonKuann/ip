@@ -20,6 +20,9 @@ public class AddDeadlineCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui) throws IOException, BlitzException {
         Task t = new Deadline(description, by);
+        if (tasks.hasDuplicate(t)) {
+            throw new BlitzException("This task is already in your list!");
+        }
         tasks.add(t);
         ui.showAdded(t, tasks.size());
     }
