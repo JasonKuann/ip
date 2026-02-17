@@ -36,10 +36,10 @@ Adds a Event task to the task list, with the uncompleted state.
 
 Example: `event travelling overseas /from 2026-02-23 /to 2026-03-02`
 
-Expected outcome:
+Expected outcome:  
 `[E][] travelling overseas (from: 2026-02-23 to: 2026-03-02)`
 
-Expected output:
+Expected output:  
 `[E][] travelling overseas (from: 2026-02-23 to: 2026-03-02)`
 
 ## Listing
@@ -50,19 +50,19 @@ Example: `list`
 ## Mark and Unmark tasks
 Marks or unmark tasks as completed or uncompleted accordingly, with an X, based on the index in the task list.
 
-Example: `mark 1`
+Example: `mark 1`  
 
-Example: `unmark 1`
+Example: `unmark 1`  
 
-Expected outcome:
-`[T][X] running`
+Expected outcome:  
+`[T][X] running`  
 
-`[T][] running`
+`[T][] running`  
 
-Expected output:
-`[T][X] running`
+Expected output:  
+`[T][X] running`  
 
-`[T][] running`
+`[T][] running`  
 
 ## Deleting task
 Deletes a task based on the index in the task list.
@@ -76,18 +76,18 @@ Expected output:
 `Now you have 0 tasks in the list.`
 
 ## Finding task
-Finds a task based on the prefix of the task name
+Finds a task based on the prefix of the task name  
 
-Example: `find r`
+Example: `find r`  
 
-Example: `find ru`
+Example: `find ru`  
 
-Example: `find run`
+Example: `find run`  
 
 Expected outcome: 
 `[T][] running`
 
-Expected output:
+Expected output:  
 `[T][] running`
 
 ## Exit
