@@ -71,10 +71,10 @@ Deletes a task based on the index in the task list.
 
 Example: `delete 1`
 
-Expected outcome:
+Expected outcome:  
 `Now you have 0 tasks in the list.`
 
-Expected output:
+Expected output:  
 `Now you have 0 tasks in the list.`
 
 ## Finding task
@@ -86,7 +86,7 @@ Example: `find ru`
 
 Example: `find run`  
 
-Expected outcome: 
+Expected outcome:  
 `[T][ ] running`
 
 Expected output:  
