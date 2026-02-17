@@ -1,3 +1,0 @@
-T | 0 | a
-D | 0 | b | Thursday
-E | 0 | c | 3pm | 6pm

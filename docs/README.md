@@ -1,30 +1,93 @@
-# Duke User Guide
+## Blitz User Guide
 
 // Update the title above to match the actual product name
 
-// Product screenshot goes here
+![Image](https://github.com/user-attachments/assets/006c00c6-a0fb-4375-9da5-9f6a1e4671dc)
 
-// Product intro goes here
+Take a look at Blitz, a chatbot that is perfect for handling your everyday tasks! It's
+- text-based
+- easy to learn
+- ~fast~ _SUPER FAST_ to use!
+
+## Adding todo
+Adds a todo task to the task list, with the uncompleted state.
+
+Example: `todo running`
+
+Expected outcome:
+```[T][] running
+Expected output:
+```[T][] running
 
 ## Adding deadlines
 
 // Describe the action and its outcome.
+Adds a Deadline task to the task list, with the uncompleted state.
 
 // Give examples of usage
 
-Example: `keyword (optional arguments)`
+Example: `deadline CS2103T assignment /by Friday 4pm`
 
 // A description of the expected outcome goes here
+Expected outcome:
+```[D][] CS2103T assignment (by: Friday 4pm)
+Expected output:
+```[D][] CS2103T assignment (by: Friday 4pm)
 
-```
-expected output
-```
+## Adding events
+Adds a Event task to the task list, with the uncompleted state.
 
-## Feature ABC
+Example: `event travelling overseas /from 2026-02-23 /to 2026-03-02`
 
-// Feature details
-
-
+Expected outcome:
+```[E][] travelling overseas (from: 2026-02-23 to: 2026-03-02)
+Expected output:
+```[E][] travelling overseas (from: 2026-02-23 to: 2026-03-02)
 ## Feature XYZ
 
-// Feature details
+## Listing
+Displays all tasks in the task list.
+
+Example: `list`
+
+## Mark and Unmark tasks
+Marks or unmark tasks as completed or uncompleted accordingly, with an X, based on the index in the task list.
+
+Example: `mark 1`
+Example: `unmark 1`
+
+Expected outcome:
+```[T][X] running
+```[T][] running
+
+Expected output:
+```[T][X] running
+```[T][] running
+
+## Deleting task
+Deletes a task based on the index in the task list.
+
+Example: `delete 1`
+
+Expected outcome:
+```Now you have 0 tasks in the list.
+
+Expected output:
+```Now you have 0 tasks in the list.
+
+## Finding task
+Finds a task based on the prefix of the task name
+
+Example: `find r`
+Example: `find ru`
+Example: `find run`
+
+Expected outcome: 
+```[T][] running
+Expected output:
+```[T][] running
+
+## Exit
+Exits program after a short delay
+
+Example: `bye`
