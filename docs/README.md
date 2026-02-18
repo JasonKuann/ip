@@ -9,7 +9,7 @@ Take a look at Blitz, a chatbot that is perfect for handling your everyday tasks
 
 ---
 
-### Features  
+### Features
 
 ## Adding todo
 Adds a todo task to the task list, with the uncompleted state.
