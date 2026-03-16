@@ -29,73 +29,89 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-         //Setting up required components
-         try {
+        loadFxmlStage(stage);
+        initializeComponents();
+        setEventHandlers();
+        AnchorPane mainLayout = createMainLayout();
+        configureStage(stage, mainLayout);
+        configureLayout(mainLayout);
+        configureScrollBehavior();
+    }
+
+    private void loadFxmlStage(Stage stage) {
+        try {
             stage.setMinHeight(220);
             stage.setMinWidth(417);
+    
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
+    
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setBlitz(blitz);  // inject the Blitz instance
+            fxmlLoader.<MainWindow>getController().setBlitz(blitz);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-         scrollPane = new ScrollPane();
-         dialogContainer = new VBox();
-         scrollPane.setContent(dialogContainer);
-
-         userInput = new TextField();
-         sendButton = new Button("Send");
-        
-         sendButton.setOnMouseClicked((event) -> {
-            handleUserInput();
-        });
-        userInput.setOnAction((event) -> {
-            handleUserInput();
-        });
-         
-         AnchorPane mainLayout = new AnchorPane();
-         mainLayout.getChildren().addAll(scrollPane, userInput, sendButton);
-
-         scene = new Scene(mainLayout);
-
-         stage.setScene(scene);
-         stage.show();
-         
-         stage.setTitle("Blitz");
+    }
+    
+    private void initializeComponents() {
+        scrollPane = new ScrollPane();
+        dialogContainer = new VBox();
+        scrollPane.setContent(dialogContainer);
+    
+        userInput = new TextField();
+        sendButton = new Button("Send");
+    }
+    
+    private void setEventHandlers() {
+        sendButton.setOnMouseClicked(event -> handleUserInput());
+        userInput.setOnAction(event -> handleUserInput());
+    }
+    
+    private AnchorPane createMainLayout() {
+        AnchorPane mainLayout = new AnchorPane();
+        mainLayout.getChildren().addAll(scrollPane, userInput, sendButton);
+        return mainLayout;
+    }
+    
+    private void configureStage(Stage stage, AnchorPane mainLayout) {
+        scene = new Scene(mainLayout);
+    
+        stage.setScene(scene);
+        stage.show();
+    
+        stage.setTitle("Blitz");
         stage.setResizable(false);
         stage.setMinHeight(600.0);
         stage.setMinWidth(400.0);
-
+    }
+    
+    private void configureLayout(AnchorPane mainLayout) {
         mainLayout.setPrefSize(400.0, 600.0);
-
+    
         scrollPane.setPrefSize(385, 535);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
         scrollPane.setVvalue(1.0);
         scrollPane.setFitToWidth(true);
-
+    
         dialogContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
+    
         userInput.setPrefWidth(325.0);
-
         sendButton.setPrefWidth(55.0);
-
+    
         AnchorPane.setTopAnchor(scrollPane, 1.0);
-
         AnchorPane.setBottomAnchor(sendButton, 1.0);
         AnchorPane.setRightAnchor(sendButton, 1.0);
-
         AnchorPane.setLeftAnchor(userInput, 1.0);
         AnchorPane.setBottomAnchor(userInput, 1.0);
-
-        dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
-
-         //More code to be added here later
+    }
+    
+    private void configureScrollBehavior() {
+        dialogContainer.heightProperty().addListener(
+                (observable) -> scrollPane.setVvalue(1.0)
+        );
     }
 
     private void handleUserInput() {
