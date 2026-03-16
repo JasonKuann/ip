@@ -2,6 +2,7 @@ package blitz;
 
 import java.io.IOException;
 
+import blitz.BlitzException;
 import blitz.command.Command;
 import blitz.model.TaskList;
 import blitz.parser.Parser;
@@ -51,7 +52,7 @@ public class Blitz {
         return command;
     }
 
-    private void executeCommand(Command command) throws BlitzException {
+    private void executeCommand(Command command) throws BlitzException, IOException {
         command.execute(tasks, ui);
         commandType = command.getClass().getSimpleName();
     }
