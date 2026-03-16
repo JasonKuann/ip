@@ -170,9 +170,5 @@ public class Parser {
         final String keyword = input.substring(4).trim();
         assert !keyword.isEmpty() : "Search keyword cannot be empty!";
         return new FindCommand(keyword);
-    }
-    
-            throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye / find");
-        }
-    }
+    }   
 }
