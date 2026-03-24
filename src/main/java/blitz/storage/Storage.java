@@ -46,7 +46,7 @@ public final class Storage {
                 switch (parts[0].trim()) {
                     case "T":
                         task = new Todo(parts[2]);
-                        break; 
+                        break;
                     case "D":
                         task = new Deadline(parts[2], parts[3]);
                         break;
