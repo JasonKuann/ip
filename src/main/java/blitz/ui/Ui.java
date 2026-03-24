@@ -82,7 +82,7 @@ public class Ui {
     public void showAdded(final Task task, final int size) {
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + task);
-        System.out.println(" Now you have " + size + " tasks in the list.");
+        System.out.println(" Now you have " + size + " tasks in the list."); 
     }
 
     /** Show that a task has been removed. */
