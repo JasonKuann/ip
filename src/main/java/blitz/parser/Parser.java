@@ -58,7 +58,7 @@ public class Parser {
             return parseDelete(input);
         }
         if (input.startsWith("find")) {
-            return parseFind(input);
+            return parseFind(input); 
         }
     
         throw new BlitzException("What is that? Try todo / deadline / event / mark / unmark / list/ bye / find");
