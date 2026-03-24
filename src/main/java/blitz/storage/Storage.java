@@ -49,7 +49,7 @@ public final class Storage {
                         break;
                     case "D":
                         task = new Deadline(parts[2], parts[3]);
-                        break;
+                        break; 
                     case "E":
                         task = new Event(parts[2], parts[3], parts[4]);
                         break;
