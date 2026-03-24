@@ -71,7 +71,7 @@ public class Deadline extends Task {
 
         // Try d/M/yyyy HHmm (e.g. "2/12/2019 1800")
         try {
-            final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+            final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("d/M/yyyy HHmm"); 
             return LocalDateTime.parse(s, dtf);
         } catch (Exception ignored) {
             // try next
