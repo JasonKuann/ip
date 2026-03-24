@@ -21,7 +21,7 @@ public class Event extends Task {
     
     @Override
     public String getTaskInfo() {
-        return "from: " + startTime + "to: " + endTime;
+        return "from: " + startTime + "to: " + endTime; 
     }
 
     @Override
