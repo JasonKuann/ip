@@ -36,7 +36,7 @@ public class Deadline extends Task {
             return "by: " + date.format(dateOnly);
         } else {
             final DateTimeFormatter dateTime = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm"); // e.g. Dec 2 2019 18:00
-            return "by: " + date.format(dateTime);
+            return "by: " + date.format(dateTime); 
         }
     }
 
