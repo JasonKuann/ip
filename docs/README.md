@@ -50,7 +50,7 @@ Displays all tasks in the task list.
 Example: `list`
 
 ## Mark and Unmark tasks
-Marks or unmark tasks as completed or uncompleted accordingly, with an X, based on the index in the task list.
+Marks or unmark tasks as completed or uncompleted accordingly, with an X, based on the index in the task list. 
 
 Example: `mark 1`  
 
